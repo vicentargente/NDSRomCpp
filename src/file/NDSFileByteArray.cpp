@@ -32,7 +32,7 @@ void NDSFileByteArray::writeUInt8(size_t offset, uint8_t value) {
 }
 
 void NDSFileByteArray::writeUInt16(size_t offset, uint16_t value) {
-	if (offset >= m_data.size()) {
+	if (offset + sizeof(uint16_t) > m_data.size()) {
 		m_data.resize(offset + sizeof(uint16_t));
 	}
 
@@ -40,7 +40,7 @@ void NDSFileByteArray::writeUInt16(size_t offset, uint16_t value) {
 }
 
 void NDSFileByteArray::writeUInt32(size_t offset, uint32_t value) {
-	if (offset >= m_data.size()) {
+	if (offset + sizeof(uint32_t) > m_data.size()) {
 		m_data.resize(offset + sizeof(uint32_t));
 	}
 
@@ -48,7 +48,7 @@ void NDSFileByteArray::writeUInt32(size_t offset, uint32_t value) {
 }
 
 void NDSFileByteArray::writeUInt64(size_t offset, uint64_t value) {
-	if (offset >= m_data.size()) {
+	if (offset + sizeof(uint64_t) > m_data.size()) {
 		m_data.resize(offset + sizeof(uint64_t));
 	}
 
