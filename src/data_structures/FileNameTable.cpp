@@ -1,8 +1,8 @@
 #include "../../include/data_structures/FileNameTable.h"
 
-FileNameTable::FileNameTable() : m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID)) {}
+FileNameTable::FileNameTable() : m_size(0), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {}
 
-FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t offset, uint32_t size): m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID)) {
+FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t offset, uint32_t size) : m_size(size), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {
 	size_t originalRomPosition = romReader.tellg();
 
 	romReader.seekg(offset); // Seek to the start of the file name table
@@ -10,17 +10,20 @@ FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t offset, uint32_t 
 	const uint32_t mainTableIndexSize = romReader.readUInt32(); // Size of the main table index (counting this value)
 	const uint32_t mainTableAmount = mainTableIndexSize / 8; // Each entry in the index is 8 bytes long
 
-	std::vector<MainTable> mainTables(mainTableAmount);
+	m_mainTables = std::vector<std::shared_ptr<FileNameTable::Directory>>(mainTableAmount, nullptr);
 
-	romReader.seekg(offset);
-	for (uint32_t i = 0; i < mainTableAmount; i++) {
+	m_mainTables[0] = m_root;
+	for (uint16_t i = 0; i < mainTableAmount; i++) {
+		romReader.seekg(offset + i * 8);
+
 		uint32_t itemOffset = romReader.readUInt32();
 		uint16_t firstFileId = romReader.readUInt16();
 		uint16_t parentDirectoryId = romReader.readUInt16();
 
-		MainTable mainTable{ parentDirectoryId };
-
-		size_t nextMainTableOffset = romReader.tellg(); // Save the offset of the next main table
+		std::shared_ptr<FileNameTable::Directory> currentDirectory = m_mainTables[i];
+		currentDirectory->setItemOffset(itemOffset);
+		currentDirectory->setFirstFileId(firstFileId);
+		currentDirectory->setParentId(parentDirectoryId);
 
 		// Read the sub files and sub directories
 		romReader.seekg(offset + itemOffset); // Global offset to the item pointed by main table
@@ -28,35 +31,22 @@ FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t offset, uint32_t 
 			if (nameLength < 0x80) { //File
 				char* name = new char[nameLength];
 				romReader.readBytes(name, nameLength);
-				mainTable.addSubFile({ firstFileId++, std::string(name, nameLength) });
+				std::string nameStr(name, nameLength);
+				std::shared_ptr<FileNameTable::File> newFile = std::make_shared<FileNameTable::File>(firstFileId++, nameStr);
+				currentDirectory->addChild(nameStr, newFile);
 				delete[] name;
 			}
 			else { //Directory
 				nameLength -= 0x80;
 				char* name = new char[nameLength];
 				romReader.readBytes(name, nameLength);
-				mainTable.addSubDirectory({ romReader.readUInt16(), std::string(name, nameLength) });
+				uint16_t directoryId = romReader.readUInt16();
+				std::string nameStr(name, nameLength);
+				std::shared_ptr<FileNameTable::Directory> newDirectory = std::make_shared<FileNameTable::Directory>(directoryId, nameStr);
+				m_mainTables[directoryId & 0xFFF] = newDirectory;
+				currentDirectory->addChild(nameStr, newDirectory);
 				delete[] name;
 			}
-		}
-
-		mainTables[i] = mainTable;
-		romReader.seekg(nextMainTableOffset);
-	}
-
-	// Create the directory tree
-	std::vector<std::shared_ptr<FileNameTable::Directory>> directories(mainTableAmount);
-	directories[0] = m_root;
-	std::vector<uint32_t> exploredDirectories(mainTableAmount, 0);
-
-	for (uint16_t i = 1; i < mainTableAmount; i++) {
-		uint16_t parentIndex = mainTables[i].parentDirectoryId & 0xFFF; // Remove the fixed 0xF000 from the parent directory id to get index
-		Entry &currentData = mainTables[parentIndex].subDirectories[exploredDirectories[parentIndex]++];
-		directories[i] = std::make_shared<FileNameTable::Directory>(currentData.id);
-		directories[parentIndex]->addChild(currentData.name, directories[i]);
-
-		for (Entry& file : mainTables[i].subFiles) {
-			directories[i]->addChild(file.name, std::make_shared<FileNameTable::File>(file.id));
 		}
 	}
 
