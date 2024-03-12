@@ -18,7 +18,7 @@ class FileAllocationTable {
 
 public:
 	FileAllocationTable();
-	FileAllocationTable(BinaryReader &romReader, uint32_t offset, uint32_t size);
+	FileAllocationTable(BinaryReader &romReader, uint32_t address, uint32_t size);
 	FileAllocationTable(const FileAllocationTable& fileAllocationTable); // Copy constructor
 
 	uint16_t getFileAmount() const;

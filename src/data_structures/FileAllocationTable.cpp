@@ -2,8 +2,8 @@
 
 FileAllocationTable::FileAllocationTable(): m_entries(0) { }
 
-FileAllocationTable::FileAllocationTable(BinaryReader& romReader, uint32_t offset, uint32_t size): m_entries(size / (2 * sizeof(uint32_t))) {
-	romReader.readBytes(reinterpret_cast<char*>(m_entries.data()), size, offset);
+FileAllocationTable::FileAllocationTable(BinaryReader& romReader, uint32_t address, uint32_t size): m_entries(size / (2 * sizeof(uint32_t))) {
+	romReader.readBytes(reinterpret_cast<char*>(m_entries.data()), size, address);
 }
 
 FileAllocationTable::FileAllocationTable(const FileAllocationTable& fileAllocationTable): m_entries(fileAllocationTable.m_entries) { }

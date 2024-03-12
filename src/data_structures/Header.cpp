@@ -6,6 +6,7 @@ Header::Header() : m_data(0) {}
 
 Header::Header(BinaryReader& romReader): m_data(0x180) {
 	size_t originalRomPosition = romReader.tellg();
+	romReader.seekg(0);
 
 	romReader.readBytes(m_data);
 
@@ -84,12 +85,12 @@ void Header::setInternalFlags(uint8_t internalFlags) {
 	m_data[0x1F] = internalFlags;
 }
 
-uint32_t Header::getArm9RomOffset() const {
+uint32_t Header::getArm9RomAddress() const {
 	return *reinterpret_cast<const uint32_t*>(&m_data[0x20]);
 }
 
-void Header::setArm9RomOffset(uint32_t arm9RomOffset) {
-	*reinterpret_cast<uint32_t*>(&m_data[0x20]) = arm9RomOffset;
+void Header::setArm9RomAddress(uint32_t arm9RomAddress) {
+	*reinterpret_cast<uint32_t*>(&m_data[0x20]) = arm9RomAddress;
 }
 
 uint32_t Header::getArm9EntryAddress() const {
@@ -116,12 +117,12 @@ void Header::setArm9Size(uint32_t arm9Size) {
 	*reinterpret_cast<uint32_t*>(&m_data[0x2C]) = arm9Size;
 }
 
-uint32_t Header::getArm7RomOffset() const {
+uint32_t Header::getArm7RomAddress() const {
 	return *reinterpret_cast<const uint32_t*>(&m_data[0x30]);
 }
 
-void Header::setArm7RomOffset(uint32_t arm7RomOffset) {
-	*reinterpret_cast<uint32_t*>(&m_data[0x30]) = arm7RomOffset;
+void Header::setArm7RomAddress(uint32_t arm7RomAddress) {
+	*reinterpret_cast<uint32_t*>(&m_data[0x30]) = arm7RomAddress;
 }
 
 uint32_t Header::getArm7EntryAddress() const {
@@ -148,12 +149,12 @@ void Header::setArm7Size(uint32_t arm7Size) {
 	*reinterpret_cast<uint32_t*>(&m_data[0x3C]) = arm7Size;
 }
 
-uint32_t Header::getFileNameTableOffset() const {
+uint32_t Header::getFileNameTableAddress() const {
 	return *reinterpret_cast<const uint32_t*>(&m_data[0x40]);
 }
 
-void Header::setFileNameTableOffset(uint32_t fileNameTableOffset) {
-	*reinterpret_cast<uint32_t*>(&m_data[0x40]) = fileNameTableOffset;
+void Header::setFileNameTableAddress(uint32_t fileNameTableAddress) {
+	*reinterpret_cast<uint32_t*>(&m_data[0x40]) = fileNameTableAddress;
 }
 
 uint32_t Header::getFileNameTableSize() const {
@@ -164,12 +165,12 @@ void Header::setFileNameTableSize(uint32_t fileNameTableSize) {
 	*reinterpret_cast<uint32_t*>(&m_data[0x44]) = fileNameTableSize;
 }
 
-uint32_t Header::getFileAllocationTableOffset() const {
+uint32_t Header::getFileAllocationTableAddress() const {
 	return *reinterpret_cast<const uint32_t*>(&m_data[0x48]);
 }
 
-void Header::setFileAllocationTableOffset(uint32_t fileAllocationTableOffset) {
-	*reinterpret_cast<uint32_t*>(&m_data[0x48]) = fileAllocationTableOffset;
+void Header::setFileAllocationTableAddress(uint32_t fileAllocationTableAddress) {
+	*reinterpret_cast<uint32_t*>(&m_data[0x48]) = fileAllocationTableAddress;
 }
 
 uint32_t Header::getFileAllocationTableSize() const {
@@ -180,12 +181,12 @@ void Header::setFileAllocationTableSize(uint32_t fileAllocationTableSize) {
 	*reinterpret_cast<uint32_t*>(&m_data[0x4C]) = fileAllocationTableSize;
 }
 
-uint32_t Header::getArm9OverlayOffset() const {
+uint32_t Header::getArm9OverlayAddress() const {
 	return *reinterpret_cast<const uint32_t*>(&m_data[0x50]);
 }
 
-void Header::setArm9OverlayOffset(uint32_t arm9OverlayOffset) {
-	*reinterpret_cast<uint32_t*>(&m_data[0x50]) = arm9OverlayOffset;
+void Header::setArm9OverlayAddress(uint32_t arm9OverlayAddress) {
+	*reinterpret_cast<uint32_t*>(&m_data[0x50]) = arm9OverlayAddress;
 }
 
 uint32_t Header::getArm9OverlaySize() const {
@@ -196,12 +197,12 @@ void Header::setArm9OverlaySize(uint32_t arm9OverlaySize) {
 	*reinterpret_cast<uint32_t*>(&m_data[0x54]) = arm9OverlaySize;
 }
 
-uint32_t Header::getArm7OverlayOffset() const {
+uint32_t Header::getArm7OverlayAddress() const {
 	return *reinterpret_cast<const uint32_t*>(&m_data[0x58]);
 }
 
-void Header::setArm7OverlayOffset(uint32_t arm7OverlayOffset) {
-	*reinterpret_cast<uint32_t*>(&m_data[0x58]) = arm7OverlayOffset;
+void Header::setArm7OverlayAddress(uint32_t arm7OverlayAddress) {
+	*reinterpret_cast<uint32_t*>(&m_data[0x58]) = arm7OverlayAddress;
 }
 
 uint32_t Header::getArm7OverlaySize() const {
@@ -228,12 +229,12 @@ void Header::setSecureCardControlRegister(uint32_t secureCardControlRegister) {
 	*reinterpret_cast<uint32_t*>(&m_data[0x64]) = secureCardControlRegister;
 }
 
-uint32_t Header::getIconBannerOffset() const {
+uint32_t Header::getIconBannerAddress() const {
 	return *reinterpret_cast<const uint32_t*>(&m_data[0x68]);
 }
 
-void Header::setIconBannerOffset(uint32_t iconBannerOffset) {
-	*reinterpret_cast<uint32_t*>(&m_data[0x68]) = iconBannerOffset;
+void Header::setIconBannerAddress(uint32_t iconBannerAddress) {
+	*reinterpret_cast<uint32_t*>(&m_data[0x68]) = iconBannerAddress;
 }
 
 uint16_t Header::getSecureAreaCrc() const {

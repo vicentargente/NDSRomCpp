@@ -108,7 +108,7 @@ class FileNameTable {
 
 public:
 	FileNameTable();
-	FileNameTable(BinaryReader &romReader, uint32_t offset, uint32_t size);
+	FileNameTable(BinaryReader &romReader, uint32_t address, uint32_t size);
 
 	uint16_t getFileIdByPath(const char* path, char dirSeparator) const;
 

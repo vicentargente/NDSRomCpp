@@ -41,8 +41,8 @@ public:
 	uint8_t getInternalFlags() const;
 	void setInternalFlags(uint8_t internalFlags);
 
-	uint32_t getArm9RomOffset() const;
-	void setArm9RomOffset(uint32_t arm9RomOffset);
+	uint32_t getArm9RomAddress() const;
+	void setArm9RomAddress(uint32_t arm9RomAddress);
 
 	uint32_t getArm9EntryAddress() const;
 	void setArm9EntryAddress(uint32_t arm9EntryAddress);
@@ -53,8 +53,8 @@ public:
 	uint32_t getArm9Size() const;
 	void setArm9Size(uint32_t arm9Size);
 
-	uint32_t getArm7RomOffset() const;
-	void setArm7RomOffset(uint32_t arm7RomOffset);
+	uint32_t getArm7RomAddress() const;
+	void setArm7RomAddress(uint32_t arm7RomAddress);
 
 	uint32_t getArm7EntryAddress() const;
 	void setArm7EntryAddress(uint32_t arm7EntryAddress);
@@ -65,26 +65,26 @@ public:
 	uint32_t getArm7Size() const;
 	void setArm7Size(uint32_t arm7Size);
 
-	uint32_t getFileNameTableOffset() const;
-	void setFileNameTableOffset(uint32_t fileNameTableOffset);
+	uint32_t getFileNameTableAddress() const;
+	void setFileNameTableAddress(uint32_t fileNameTableAddress);
 
 	uint32_t getFileNameTableSize() const;
 	void setFileNameTableSize(uint32_t fileNameTableSize);
 
-	uint32_t getFileAllocationTableOffset() const;
-	void setFileAllocationTableOffset(uint32_t fileAllocationTableOffset);
+	uint32_t getFileAllocationTableAddress() const;
+	void setFileAllocationTableAddress(uint32_t fileAllocationTableAddress);
 
 	uint32_t getFileAllocationTableSize() const;
 	void setFileAllocationTableSize(uint32_t fileAllocationTableSize);
 
-	uint32_t getArm9OverlayOffset() const;
-	void setArm9OverlayOffset(uint32_t arm9OverlayOffset);
+	uint32_t getArm9OverlayAddress() const;
+	void setArm9OverlayAddress(uint32_t arm9OverlayAddress);
 
 	uint32_t getArm9OverlaySize() const;
 	void setArm9OverlaySize(uint32_t arm9OverlaySize);
 
-	uint32_t getArm7OverlayOffset() const;
-	void setArm7OverlayOffset(uint32_t arm7OverlayOffset);
+	uint32_t getArm7OverlayAddress() const;
+	void setArm7OverlayAddress(uint32_t arm7OverlayAddress);
 
 	uint32_t getArm7OverlaySize() const;
 	void setArm7OverlaySize(uint32_t arm7OverlaySize);
@@ -95,8 +95,8 @@ public:
 	uint32_t getSecureCardControlRegister() const;
 	void setSecureCardControlRegister(uint32_t secureCardControlRegister);
 
-	uint32_t getIconBannerOffset() const;
-	void setIconBannerOffset(uint32_t iconBannerOffset);
+	uint32_t getIconBannerAddress() const;
+	void setIconBannerAddress(uint32_t iconBannerAddress);
 
 	uint16_t getSecureAreaCrc() const;
 	void setSecureAreaCrc(uint16_t secureAreaCrc);

@@ -10,9 +10,9 @@ NDSRom::NDSRom(const char* filename) : m_filePath(filename) {
 
 	m_header = Header(reader);
 
-	m_fileNameTable = FileNameTable(reader, m_header.getFileNameTableOffset(), m_header.getFileNameTableSize());
+	m_fileNameTable = FileNameTable(reader, m_header.getFileNameTableAddress(), m_header.getFileNameTableSize());
 
-	m_fileAllocationTable = FileAllocationTable(reader, m_header.getFileAllocationTableOffset(), m_header.getFileAllocationTableSize());
+	m_fileAllocationTable = FileAllocationTable(reader, m_header.getFileAllocationTableAddress(), m_header.getFileAllocationTableSize());
 
 	reader.close();
 }
@@ -31,7 +31,6 @@ std::shared_ptr<NDSFile> NDSRom::getFile(uint16_t fileId) const {
 	uint32_t fileSize = m_fileAllocationTable.getSizeById(fileId);
 
 	BinaryReader reader(m_filePath);
-	//reader.seekg(fileOffset);
 
 	std::shared_ptr<NDSFileByteArray> file = std::make_shared<NDSFileByteArray>(fileSize);
 	reader.readBytes(file->data(), fileOffset);
@@ -39,8 +38,8 @@ std::shared_ptr<NDSFile> NDSRom::getFile(uint16_t fileId) const {
 	return file;
 }
 
-std::shared_ptr<NDSFile> NDSRom::getFile(const char* filename) const {
-	uint16_t fileId = m_fileNameTable.getFileIdByPath(filename, '/');
+std::shared_ptr<NDSFile> NDSRom::getFile(const char* ndsFilename) const {
+	uint16_t fileId = m_fileNameTable.getFileIdByPath(ndsFilename, '/');
 	return NDSRom::getFile(fileId);
 }
 
@@ -48,8 +47,8 @@ void NDSRom::importFile(uint16_t fileId, std::shared_ptr<NDSFile> file) {
 	m_importedFiles[fileId] = file;
 }
 
-void NDSRom::importFile(const char* filename, std::shared_ptr<NDSFile> file) {
-	uint16_t fileId = m_fileNameTable.getFileIdByPath(filename, '/');
+void NDSRom::importFile(const char* ndsFilename, std::shared_ptr<NDSFile> file) {
+	uint16_t fileId = m_fileNameTable.getFileIdByPath(ndsFilename, '/');
 	NDSRom::importFile(fileId, file);
 }
 
@@ -71,21 +70,20 @@ void NDSRom::saveToFile(const char* newRomPath) {
 	fileCopier.copy(reader, 0x180, writer, 0x180, 0x4000 - 0x180); // Copy full header (skipping the data)
 
 	// Copy the full code
-	fileCopier.copy(reader, m_header.getArm9RomOffset(), writer, m_header.getArm9RomOffset(), m_header.getArm9Size());
-	fileCopier.copy(reader, m_header.getArm9OverlayOffset(), writer, m_header.getArm9OverlayOffset(), m_header.getArm9OverlaySize());
-	fileCopier.copy(reader, m_header.getArm7RomOffset(), writer, m_header.getArm7RomOffset(), m_header.getArm7Size());
-	fileCopier.copy(reader, m_header.getArm7OverlayOffset(), writer, m_header.getArm7OverlayOffset(), m_header.getArm7OverlaySize());
+	fileCopier.copy(reader, m_header.getArm9RomAddress(), writer, m_header.getArm9RomAddress(), m_header.getArm9Size());
+	fileCopier.copy(reader, m_header.getArm9OverlayAddress(), writer, m_header.getArm9OverlayAddress(), m_header.getArm9OverlaySize());
+	fileCopier.copy(reader, m_header.getArm7RomAddress(), writer, m_header.getArm7RomAddress(), m_header.getArm7Size());
+	fileCopier.copy(reader, m_header.getArm7OverlayAddress(), writer, m_header.getArm7OverlayAddress(), m_header.getArm7OverlaySize());
 
 	// Copy the full banner
 	uint32_t bannerSize = 0x20 + 0x20 + 0x200 + 6 * 0x100;
-	fileCopier.copy(reader, m_header.getIconBannerOffset(), writer, m_header.getIconBannerOffset(), bannerSize);
+	fileCopier.copy(reader, m_header.getIconBannerAddress(), writer, m_header.getIconBannerAddress(), bannerSize);
 
 	// Copy the full FNT
-	//fileCopier.copy(reader, m_header.getFileNameTableOffset(), writer, m_header.getFileNameTableOffset(), m_header.getFileNameTableSize());
-	m_fileNameTable.writeToFile(writer, m_header.getFileNameTableOffset());
+	m_fileNameTable.writeToFile(writer, m_header.getFileNameTableAddress());
 
 	// Copy the full FAT
-	modifiedFileAllocationTable.writeToFile(writer, m_header.getFileAllocationTableOffset());
+	modifiedFileAllocationTable.writeToFile(writer, m_header.getFileAllocationTableAddress());
 
 	// Copy the files
 	for (uint16_t fileId = 0; fileId < m_fileAllocationTable.getFileAmount(); fileId++) {

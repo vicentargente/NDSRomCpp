@@ -4,10 +4,10 @@
 
 FileNameTable::FileNameTable() : m_size(0), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {}
 
-FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t offset, uint32_t size) : m_size(size), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {
+FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t address, uint32_t size) : m_size(size), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {
 	size_t originalRomPosition = romReader.tellg();
 
-	romReader.seekg(offset); // Seek to the start of the file name table
+	romReader.seekg(address); // Seek to the start of the file name table
 
 	const uint32_t mainTableIndexSize = romReader.readUInt32(); // Size of the main table index (counting this value)
 	const uint32_t mainTableAmount = mainTableIndexSize / 8; // Each entry in the index is 8 bytes long
@@ -16,7 +16,7 @@ FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t offset, uint32_t 
 
 	m_mainTables[0] = m_root;
 	for (uint16_t i = 0; i < mainTableAmount; i++) {
-		romReader.seekg(offset + i * 8);
+		romReader.seekg(address + i * 8);
 
 		uint32_t itemOffset = romReader.readUInt32();
 		uint16_t firstFileId = romReader.readUInt16();
@@ -28,7 +28,7 @@ FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t offset, uint32_t 
 		currentDirectory->setParentId(parentDirectoryId);
 
 		// Read the sub files and sub directories
-		romReader.seekg(offset + itemOffset); // Global offset to the item pointed by main table
+		romReader.seekg(address + itemOffset); // Global offset to the item pointed by main table
 		for (uint8_t nameLength = romReader.readUInt8(); nameLength != 0; nameLength = romReader.readUInt8()) {
 			if (nameLength < 0x80) { //File
 				char* name = new char[nameLength];
