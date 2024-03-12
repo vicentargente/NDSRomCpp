@@ -86,5 +86,5 @@ void NDSFileByteArray::writeToFile(BinaryWriter& writer, size_t offset) const {
 }
 
 uint32_t NDSFileByteArray::size() const {
-	return m_data.size();
+	return static_cast<uint32_t>(m_data.size());
 }

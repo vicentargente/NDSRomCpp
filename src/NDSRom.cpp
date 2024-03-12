@@ -100,7 +100,7 @@ void NDSRom::saveToFile(const char* newRomPath) {
 		}
 	}
 
-	m_header.setNtrRegionRomSize(writer.tellp());
+	m_header.setNtrRegionRomSize(static_cast<uint32_t>(writer.tellp()));
 
 	// Copy the header data
 	m_header.writeToFile(writer);

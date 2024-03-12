@@ -9,7 +9,7 @@ FileAllocationTable::FileAllocationTable(BinaryReader& romReader, uint32_t offse
 FileAllocationTable::FileAllocationTable(const FileAllocationTable& fileAllocationTable): m_entries(fileAllocationTable.m_entries) { }
 
 uint16_t FileAllocationTable::getFileAmount() const {
-	return m_entries.size();
+	return static_cast<uint16_t>(m_entries.size());
 }
 
 uint32_t FileAllocationTable::getBeginingById(uint16_t fileId) const {
