@@ -41,7 +41,8 @@ class FileNameTable {
 			Node(id, name, FileNameTable::NodeType::DIRECTORY),
 			m_itemOffset(0),
 			m_firstFileId(0),
-			m_parentId(0) {
+			m_parentId(0),
+			m_currentOrderedChild(0){
 		};
 
 		void addChild(std::string& name, std::shared_ptr<Node> node) {
@@ -57,17 +58,43 @@ class FileNameTable {
 			return it->second;
 		};
 
+		uint32_t getItemOffset() const {
+			return m_itemOffset;
+		};
+
 		void setItemOffset(uint32_t itemOffset) {
 			m_itemOffset = itemOffset;
+		};
+
+		uint16_t getFirstFileId() const {
+			return m_firstFileId;
 		};
 
 		void setFirstFileId(uint16_t firstFileId) {
 			m_firstFileId = firstFileId;
 		};
 
+		uint16_t getParentId() const {
+			return m_parentId;
+		};
+
 		void setParentId(uint16_t parentId) {
 			m_parentId = parentId;
 		};
+
+		// Iterator for ordered children
+		void goToFirstOrderedChild() {
+			m_currentOrderedChild = 0;
+		};
+
+		bool hasNextOrderedChild() {
+			return m_currentOrderedChild < m_orderedChildren.size();
+		};
+
+		std::shared_ptr<Node> getNextOrderedChild() {
+			return m_orderedChildren[m_currentOrderedChild++];
+		};
+		// END iterator for ordered children
 	private:
 		std::vector<std::shared_ptr<Node>> m_orderedChildren; // For tracking order
 		std::unordered_map<std::string, std::shared_ptr<Node>> m_children; // For quick access by name
@@ -75,6 +102,8 @@ class FileNameTable {
 		uint32_t m_itemOffset;
 		uint16_t m_firstFileId;
 		uint16_t m_parentId;
+
+		size_t m_currentOrderedChild; // Iterator for ordered children
 	};
 
 public:
@@ -83,9 +112,9 @@ public:
 
 	uint16_t getFileIdByPath(const char* path, char dirSeparator) const;
 
-	//void writeToFile(BinaryWriter& writer) const;
+	void writeToFile(BinaryWriter& writer, uint32_t offset) const;
 private:
-	//std::vector<uint8_t>* getData() const;
+	std::vector<uint8_t>* getData() const;
 
 	uint32_t m_size;
 	std::shared_ptr<Directory> m_root;

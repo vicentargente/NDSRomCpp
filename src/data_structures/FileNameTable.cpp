@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "../../include/data_structures/FileNameTable.h"
 
 FileNameTable::FileNameTable() : m_size(0), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {}
@@ -72,4 +74,50 @@ uint16_t FileNameTable::getFileIdByPath(const char* path, char dirSeparator) con
 	}
 
 	return std::dynamic_pointer_cast<FileNameTable::File>(currentDirectory->getChild(std::string(pathParts.back())))->getId();
+}
+
+void FileNameTable::writeToFile(BinaryWriter& writer, uint32_t offset) const {
+	std::vector<uint8_t>* data = this->getData();
+	writer.writeBytes(*data, offset);
+	delete data;
+}
+
+std::vector<uint8_t>* FileNameTable::getData() const {
+	std::vector<uint8_t>* data = new std::vector<uint8_t>(m_size);
+
+	// Write the main tables
+	for (uint16_t i = 0; i < m_mainTables.size(); i++) {
+		std::shared_ptr<FileNameTable::Directory> currentDirectory = m_mainTables[i];
+
+		*reinterpret_cast<uint32_t*>(&data->at(i * 8)) = currentDirectory->getItemOffset();
+		*reinterpret_cast<uint16_t*>(&data->at(i * 8 + 4)) = currentDirectory->getFirstFileId();
+		*reinterpret_cast<uint16_t*>(&data->at(i * 8 + 6)) = currentDirectory->getParentId();
+
+		// Write the sub files and sub directories
+		uint32_t itemOffset = currentDirectory->getItemOffset();
+		for (currentDirectory->goToFirstOrderedChild(); currentDirectory->hasNextOrderedChild();) {
+			std::shared_ptr<FileNameTable::Node> child = currentDirectory->getNextOrderedChild();
+
+			const std::string& name = child->getName();
+
+			if (child->getType() == FileNameTable::NodeType::FILE) {
+				data->at(itemOffset++) = static_cast<uint32_t>(name.size());
+				std::copy(name.begin(), name.end(), data->begin() + itemOffset);
+				itemOffset += static_cast<uint32_t>(name.size());
+			}
+			else {
+				data->at(itemOffset++) = static_cast<uint32_t>(name.size()) + 0x80;
+				std::copy(name.begin(), name.end(), data->begin() + itemOffset);
+				itemOffset += static_cast<uint32_t>(name.size());
+				*reinterpret_cast<uint16_t*>(&data->at(itemOffset)) = std::dynamic_pointer_cast<FileNameTable::Directory>(child)->getId();
+				itemOffset += 2;
+			}
+		}
+
+		data->at(itemOffset) = 0; // End of directory
+	}
+
+	//Falta escribir los nombres de los archivos y directorios
+
+	return data;
 }

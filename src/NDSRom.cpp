@@ -81,7 +81,8 @@ void NDSRom::saveToFile(const char* newRomPath) {
 	fileCopier.copy(reader, m_header.getIconBannerOffset(), writer, m_header.getIconBannerOffset(), bannerSize);
 
 	// Copy the full FNT
-	fileCopier.copy(reader, m_header.getFileNameTableOffset(), writer, m_header.getFileNameTableOffset(), m_header.getFileNameTableSize());
+	//fileCopier.copy(reader, m_header.getFileNameTableOffset(), writer, m_header.getFileNameTableOffset(), m_header.getFileNameTableSize());
+	m_fileNameTable.writeToFile(writer, m_header.getFileNameTableOffset());
 
 	// Copy the full FAT
 	modifiedFileAllocationTable.writeToFile(writer, m_header.getFileAllocationTableOffset());
