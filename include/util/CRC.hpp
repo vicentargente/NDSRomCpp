@@ -46,7 +46,8 @@ namespace CRC16 {
 
 		length = std::min(length, static_cast<uint32_t>(data.size()));
 
-		for (uint32_t i = begining; i < length; i++)
+		uint32_t dataEnd = begining + length;
+		for (uint32_t i = begining; i < dataEnd; i++)
 		{
 			crc = (crc >> 8) ^ crc16tab[(crc ^ data[i]) & 0xFF];
 		}

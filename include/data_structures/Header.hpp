@@ -132,6 +132,10 @@ public:
 
 	// Debugger reserved 32bytes
 
+	// TODO: recalculateSecureAreaCrc
+	void recalculateNintendoLogoCrc();
+	void recalculateHeaderCrc();
+
 	void writeToFile(BinaryWriter& writer) const;
 
 private:

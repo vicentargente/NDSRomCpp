@@ -1,10 +1,11 @@
 #include "../../include/data_structures/Header.hpp"
+#include "../../include/util/CRC.hpp"
 
 const size_t Header::HEADER_SIZE = 0x180;
 
 Header::Header() : m_data(0) {}
 
-Header::Header(BinaryReader& romReader): m_data(0x180) {
+Header::Header(BinaryReader& romReader): m_data(HEADER_SIZE) {
 	size_t originalRomPosition = romReader.tellg();
 	romReader.seekg(0);
 
@@ -294,11 +295,11 @@ void Header::setHeaderSize(uint32_t headerSize) {
 }
 
 std::vector<uint8_t> Header::getNintendoLogo() const {
-	return std::vector<uint8_t>(m_data.begin() + 0x88, m_data.begin() + 0x88 + 0x9C);
+	return std::vector<uint8_t>(m_data.begin() + 0xC0, m_data.begin() + 0xC0 + 0x9C);
 }
 
 void Header::setNintendoLogo(const std::vector<uint8_t>& nintendoLogo) {
-	std::copy(nintendoLogo.begin(), nintendoLogo.end(), m_data.begin() + 0x88);
+	std::copy(nintendoLogo.begin(), nintendoLogo.end(), m_data.begin() + 0xC0);
 }
 
 uint16_t Header::getNintendoLogoCrc() const {
@@ -315,6 +316,18 @@ uint16_t Header::getHeaderCrc() const {
 
 void Header::setHeaderCrc(uint16_t headerCrc) {
 	*reinterpret_cast<uint16_t*>(&m_data[0x15E]) = headerCrc;
+}
+
+void Header::recalculateNintendoLogoCrc()
+{
+	uint16_t crc = CRC16::calculate(this->m_data, 0xC0, 0x9C);
+	this->setNintendoLogoCrc(crc);
+}
+
+void Header::recalculateHeaderCrc()
+{
+	uint16_t crc = CRC16::calculate(this->m_data, 0, 0x015E);
+	this->setHeaderCrc(crc);
 }
 
 void Header::writeToFile(BinaryWriter& writer) const {
