@@ -1,6 +1,6 @@
 #include "../../include/data_structures/Header.hpp"
 
-static const size_t HEADER_SIZE = 0x180;
+const size_t Header::HEADER_SIZE = 0x180;
 
 Header::Header() : m_data(0) {}
 

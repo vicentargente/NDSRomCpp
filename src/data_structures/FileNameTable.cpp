@@ -3,6 +3,8 @@
 
 #include "../../include/data_structures/FileNameTable.hpp"
 
+const uint16_t FileNameTable::ROOT_DIRECTORY_ID = 0xF000;
+
 FileNameTable::FileNameTable() : m_size(0), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {}
 
 FileNameTable::FileNameTable(BinaryReader& romReader, uint32_t address, uint32_t size) : m_size(size), m_root(std::make_shared<FileNameTable::Directory>(ROOT_DIRECTORY_ID, "root")) {

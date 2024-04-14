@@ -121,7 +121,7 @@ private:
 	std::vector<std::shared_ptr<Directory>> m_mainTables;
 
 	// constants
-	static const uint16_t ROOT_DIRECTORY_ID = 0xF000;
+	static const uint16_t ROOT_DIRECTORY_ID;
 };
 
 #endif

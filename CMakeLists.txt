@@ -32,7 +32,7 @@ add_library(
 
 if(BUILD_TESTS)
     add_executable(HeaderTest tests/HeaderTest.cpp)
-    target_link_libraries(HeaderTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES})
+    target_link_libraries(HeaderTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} nds-cpp)
 
     add_test(NAME HeaderTest COMMAND HeaderTest)
 endif()
