@@ -3,6 +3,15 @@ project(nds-cpp VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
+
+option(BUILD_TESTS "Build the tests" OFF)
+
+if(BUILD_TESTS)
+    enable_testing()
+    find_package(GTest REQUIRED)
+    include_directories(${GTEST_INCLUDE_DIRS})
+endif()
+
 add_library(
     nds-cpp
     src/NDSRom.cpp
@@ -20,6 +29,13 @@ add_library(
     include/util/BinaryWriter.hpp include/util/CRC.hpp
     include/util/FileCopier.hpp
 )
+
+if(BUILD_TESTS)
+    add_executable(HeaderTest tests/HeaderTest.cpp)
+    target_link_libraries(HeaderTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES})
+
+    add_test(NAME HeaderTest COMMAND HeaderTest)
+endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
