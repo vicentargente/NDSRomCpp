@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(nds-cpp VERSION 0.1.0 LANGUAGES C CXX)
+project(NdsCpp VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_CXX_STANDARD 20)
 
@@ -13,7 +13,7 @@ if(BUILD_TESTS)
 endif()
 
 add_library(
-    nds-cpp
+    NdsCpp
     src/NDSRom.cpp
     include/NDSRom.hpp
     src/data_structures/Header.cpp
@@ -32,9 +32,17 @@ add_library(
 
 if(BUILD_TESTS)
     add_executable(HeaderTest tests/HeaderTest.cpp)
-    target_link_libraries(HeaderTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} nds-cpp)
+    target_link_libraries(HeaderTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} NdsCpp)
 
-    add_test(NAME HeaderTest COMMAND HeaderTest)
+    add_executable(FileNameTableTest tests/FileNameTableTest.cpp)
+    target_link_libraries(FileNameTableTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} NdsCpp)
+
+    add_executable(FileAllocationTableTest tests/FileAllocationTableTest.cpp)
+    target_link_libraries(FileAllocationTableTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} NdsCpp)
+
+    add_test(NAME Header COMMAND HeaderTest)
+    add_test(NAME FileNameTable COMMAND FileNameTableTest)
+    add_test(NAME FileAllocationTable COMMAND FileAllocationTableTest)
 endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
