@@ -40,9 +40,13 @@ if(BUILD_TESTS)
     add_executable(FileAllocationTableTest tests/FileAllocationTableTest.cpp)
     target_link_libraries(FileAllocationTableTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} NdsCpp)
 
+    add_executable(NDSFileByteArrayTest tests/NDSFileByteArrayTest.cpp)
+    target_link_libraries(NDSFileByteArrayTest ${GTEST_LIBRARIES} ${GTEST_MAIN_LIBRARIES} NdsCpp)
+
     add_test(NAME Header COMMAND HeaderTest)
     add_test(NAME FileNameTable COMMAND FileNameTableTest)
     add_test(NAME FileAllocationTable COMMAND FileAllocationTableTest)
+    add_test(NAME NDSFileByteArray COMMAND NDSFileByteArrayTest)
 endif()
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})

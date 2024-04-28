@@ -4,23 +4,38 @@
 NDSFileByteArray::NDSFileByteArray(uint32_t fileSize) : m_data(fileSize) {}
 
 uint8_t NDSFileByteArray::readUInt8(size_t offset) const {
+	if(offset >= m_data.size())
+		throw std::runtime_error("Index out of bounds: " + offset);
+
 	return m_data[offset];
 }
 
 uint16_t NDSFileByteArray::readUInt16(size_t offset) const {
+	if(offset + sizeof(uint16_t) > m_data.size())
+		throw std::runtime_error("Index out of bounds: " + offset);
+
 	return *reinterpret_cast<const uint16_t*>(&m_data[offset]);
 }
 
 uint32_t NDSFileByteArray::readUInt32(size_t offset) const {
+	if(offset + sizeof(uint32_t) > m_data.size())
+		throw std::runtime_error("Index out of bounds: " + offset);
+
 	return *reinterpret_cast<const uint32_t*>(&m_data[offset]);
 }
 
 uint64_t NDSFileByteArray::readUInt64(size_t offset) const {
+	if(offset + sizeof(uint64_t) > m_data.size())
+		throw std::runtime_error("Index out of bounds: " + offset);
+
 	return *reinterpret_cast<const uint64_t*>(&m_data[offset]);
 }
 
 void NDSFileByteArray::readBytes(std::vector<uint8_t>& buffer, size_t offset) const {
-	buffer = std::vector<uint8_t>(m_data.begin() + offset, m_data.end());
+	if(offset + buffer.size() > m_data.size())
+		throw std::runtime_error("Index out of bounds: " + offset);
+
+	std::copy(m_data.begin() + offset, m_data.begin() + offset + buffer.size(), buffer.begin());
 }
 
 void NDSFileByteArray::writeUInt8(size_t offset, uint8_t value) {
