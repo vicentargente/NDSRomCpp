@@ -2,3 +2,7 @@
 build/
 tests/
 .pre-commit-config.yaml
+Docker*
+docker*
+.devcontainer/
+.github/

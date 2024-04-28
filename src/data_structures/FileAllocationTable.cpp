@@ -39,6 +39,8 @@ void FileAllocationTable::resizeFile(uint16_t fileId, uint32_t newSize) {
 			m_entries[currentFileId].end += sizeDifference;
 		}
 	}
+
+	m_entries[fileId].end = newRealEnd;
 }
 
 void FileAllocationTable::writeToFile(BinaryWriter& writer, uint32_t offset) const {
