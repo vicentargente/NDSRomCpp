@@ -31,6 +31,13 @@ uint64_t NDSFileByteArray::readUInt64(size_t offset) const {
 	return *reinterpret_cast<const uint64_t*>(&m_data[offset]);
 }
 
+void NDSFileByteArray::readBytes(char *buffer, size_t size, size_t offset) const {
+	if(offset + size > m_data.size())
+		throw std::runtime_error("Index out of bounds: " + offset);
+
+	std::copy(m_data.begin() + offset, m_data.begin() + offset + size, buffer);
+}
+
 void NDSFileByteArray::readBytes(std::vector<uint8_t>& buffer, size_t offset) const {
 	if(offset + buffer.size() > m_data.size())
 		throw std::runtime_error("Index out of bounds: " + offset);

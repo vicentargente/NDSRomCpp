@@ -1,4 +1,5 @@
 .vscode/
+.cache/
 build/
 tests/
 .pre-commit-config.yaml

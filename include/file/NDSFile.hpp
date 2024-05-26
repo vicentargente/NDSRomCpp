@@ -12,6 +12,7 @@ public:
 	virtual uint16_t readUInt16(size_t offset) const = 0;
 	virtual uint32_t readUInt32(size_t offset) const = 0;
 	virtual uint64_t readUInt64(size_t offset) const = 0;
+	virtual void readBytes(char *buffer, size_t size, size_t offset) const = 0;
 	virtual void readBytes(std::vector<uint8_t>& buffer, size_t offset) const = 0;
 
 	virtual void writeUInt8(size_t offset, uint8_t value) = 0;

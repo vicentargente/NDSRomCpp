@@ -11,6 +11,7 @@ public:
 	uint16_t readUInt16(size_t offset) const override;
 	uint32_t readUInt32(size_t offset) const override;
 	uint64_t readUInt64(size_t offset) const override;
+	void readBytes(char *buffer, size_t size, size_t offset) const override;
 	void readBytes(std::vector<uint8_t>& buffer, size_t offset) const override;
 
 	void writeUInt8(size_t offset, uint8_t value) override;
