@@ -6,7 +6,10 @@
 
 #include "../../../../file/NDSFile.hpp"
 #include "../../../../util/Number.hpp"
+
 #include "mesh/MeshList.hpp"
+#include "render_cmd/RenderCommandList.hpp"
+
 // #include "../../../common/NameList.hpp"
 
 class MdlModel {
@@ -56,6 +59,7 @@ private:
 
     // TODO: BoneList
 
+    ModelRenderCommandList m_renderCmdList; // Pointed by m_renderCmdsOffset
     ModelMeshList m_meshList; // Pointed by m_meshesOffset
 };
 
